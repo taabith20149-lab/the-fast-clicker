@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Chef Taabith’s Click Game — Bonus Edition</title>
+  <style>
+    body {
+      background-color: black;
+      color: lime;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      padding-top: 60px;
+    }
+    #btn {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 20px 40px;
+      font-size: 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    #btn:disabled {
+      background-color: #660000;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+    #score, #points {
+      font-size: 30px;
+      margin-top: 20px;
+    }
+    #time {
+      font-size: 26px;
+      margin-top: 8px;
+    }
+    #controls {
+      margin-top: 20px;
+    }
+    #message {
+      margin-top: 18px;
+      font-size: 18px;
+    }
+    .small {
+      font-size: 14px;
+      color: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔥 Chef Taabith’s Click Game — Bonus Edition 🔥</h1>
+
+  <div id="time">Time: 20s</div>
+  <div id="score">Clicks: 0</div>
+  <div id="points">Points: 0</div>
+
+  <div id="controls">
+    <button id="btn" disabled>Click Me!</button>
+  </div>
+
+  <div id="message" class="small">
+    Press <strong>Start</strong> to begin. Each 150 clicks = +100 points!
+  </div>
+
+  <div style="margin-top:18px;">
+    <button id="start">Start</button>
+    <button id="reset" style="display:none;">Play Again</button>
+  </div>
+
+  <script>
+    const btn = document.getElementById('btn');
+    const startBtn = document.getElementById('start');
+    const resetBtn = document.getElementById('reset');
+    const scoreDisplay = document.getElementById('score');
+    const pointsDisplay = document.getElementById('points');
+    const timeDisplay = document.getElementById('time');
+    const message = document.getElementById('message');
+
+    let clicks = 0;
+    let points = 0;
+    let timeLeft = 20;
+    let timerId = null;
+    let running = false;
+
+    function updateDisplays() {
+      scoreDisplay.textContent = "Clicks: " + clicks;
+      pointsDisplay.textContent = "Points: " + points;
+      timeDisplay.textContent = "Time: " + timeLeft + "s";
+    }
+
+    function startGame() {
+      clicks = 0;
+      points = 0;
+      timeLeft = 20;
+      running = true;
+      btn.disabled = false;
+      startBtn.disabled = true;
+      resetBtn.style.display = 'none';
+      message.textContent = "Go! Click as fast as you can!";
+      updateDisplays();
+
+      timerId = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) endGame();
+        updateDisplays();
+      }, 1000);
+    }
+
+    function endGame() {
+      running = false;
+      clearInterval(timerId);
+      btn.disabled = true;
+      startBtn.disabled = false;
+      resetBtn.style.display = 'inline-block';
+      message.textContent = "⏱️ Time’s up! You got " + clicks + " clicks and " + points + " points!";
+    }
+
+    function resetGame() {
+      clicks = 0;
+      points = 0;
+      timeLeft = 20;
+      btn.disabled = true;
+      startBtn.disabled = false;
+      resetBtn.style.display = 'none';
+      message.textContent = "Press Start to begin. Each 150 clicks = +100 points!";
+      updateDisplays();
+    }
+
+    btn.addEventListener('click', () => {
+      if (!running) return;
+      clicks++;
+      if (clicks % 150 === 0) {
+        points += 100;
+        message.textContent = "🎉 Bonus! +100 points for 150 clicks!";
+      }
+      updateDisplays();
+    });
+
+    startBtn.addEventListener('click', startGame);
+    resetBtn.addEventListener('click', resetGame);
+
+    resetGame();
+  </script>
+</body>
+</html>
